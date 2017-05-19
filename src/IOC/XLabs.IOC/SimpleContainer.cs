@@ -2,7 +2,7 @@
 // Assembly         : XLabs.Ioc
 // Author           : XLabs Team
 // Created          : 12-27-2015
-// 
+//
 // Last Modified By : XLabs Team
 // Last Modified On : 01-04-2016
 // ***********************************************************************
@@ -12,12 +12,12 @@
 // <summary>
 //       This project is licensed under the Apache 2.0 license
 //       https://github.com/XLabs/Xamarin-Forms-Labs/blob/master/LICENSE
-//       
-//       XLabs is a open source project that aims to provide a powerfull and cross 
+//
+//       XLabs is a open source project that aims to provide a powerfull and cross
 //       platform set of controls tailored to work with Xamarin Forms.
 // </summary>
 // ***********************************************************************
-// 
+//
 
 using System;
 using System.Collections.Generic;
@@ -34,10 +34,12 @@ namespace XLabs.Ioc
 		/// The _resolver
 		/// </summary>
 		private readonly IResolver resolver;
+
 		/// <summary>
 		/// The _services
 		/// </summary>
 		private readonly Dictionary<Type, List<object>> services;
+
 		/// <summary>
 		/// The _registered services
 		/// </summary>
@@ -54,6 +56,7 @@ namespace XLabs.Ioc
 		}
 
 		#region IDependencyContainer Members
+
 		/// <summary>
 		/// Gets the resolver from the container
 		/// </summary>
@@ -75,6 +78,24 @@ namespace XLabs.Ioc
 			List<object> list;
 
 			if (!this.services.TryGetValue(type, out list))
+			{
+				list = new List<object>();
+				this.services.Add(type, list);
+			}
+
+			list.Add(instance);
+			return this;
+		}
+
+		/// <summary>
+		/// Tries to register an instance of a type.
+		/// </summary>
+		/// <param name="type">Type to register.</param>
+		/// <param name="instance">Instance of type.</param>
+		/// <returns>An instance of <see cref="IDependencyContainer"/></returns>
+		public IDependencyContainer Register(Type type, object instance)
+		{
+			if (!this.services.TryGetValue(type, out List<object> list))
 			{
 				list = new List<object>();
 				this.services.Add(type, list);
@@ -117,6 +138,25 @@ namespace XLabs.Ioc
 			}
 
 			var instance = Activator.CreateInstance<TImpl>() as TImpl;
+
+			list.Add(instance);
+			return this;
+		}
+
+		/// <summary>
+		/// Registers a type as singleton.
+		/// </summary>
+		/// <param name="type">Type to register.</param>
+		/// <returns>An instance of <see cref="IDependencyContainer"/></returns>
+		public IDependencyContainer RegisterSingle(Type type)
+		{
+			if (!this.services.TryGetValue(type, out List<object> list))
+			{
+				list = new List<object>();
+				this.services.Add(type, list);
+			}
+
+			var instance = Activator.CreateInstance(type);
 
 			list.Add(instance);
 			return this;
@@ -200,7 +240,7 @@ namespace XLabs.Ioc
 			}
 		}
 
-		#endregion
+		#endregion IDependencyContainer Members
 
 		/// <summary>
 		/// Class Resolver.
@@ -282,7 +322,8 @@ namespace XLabs.Ioc
 			{
 				return this.Resolve<T>() != null;
 			}
-			#endregion
+
+			#endregion IResolver Members
 		}
 	}
 }
