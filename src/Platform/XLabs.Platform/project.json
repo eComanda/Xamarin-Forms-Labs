@@ -2,7 +2,7 @@
   "supports": {},
   "dependencies": {
     "ExifLib.PCL": "1.0.2-pre01",
-    "NETStandard.Library": "1.6.0"
+    "NETStandard.Library": "1.6.1"
   },
   "frameworks": {
     "netstandard1.0": {}
